@@ -1,5 +1,7 @@
 package com.granados;
 
+import com.github.javafaker.Faker;
+import com.github.javafaker.Name;
 import com.granados.customer.Customer;
 import com.granados.customer.CustomerRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -19,12 +21,16 @@ public class Main {
     @Bean
     CommandLineRunner runner(CustomerRepository customerRepository){
         return args -> {
-            Customer german = new Customer("German", "ggranados@gmail.com", 30);
-            Customer marita = new Customer("Marita", "marita@gmail.com", 24);
+            Faker faker = new Faker();
+            Name name = faker.name();
+            String firstName = name.firstName();
+            String lastName = name.lastName();
+            Customer customer = new Customer(
+                    firstName + " " + lastName,
+                    firstName.toLowerCase() + "." + lastName.toLowerCase() + "@gmail.com",
+                    faker.random().nextInt(15, 100));
 
-            List<Customer> customers = List.of(german, marita);
-
-            customerRepository.saveAll(customers);
+            customerRepository.save(customer);
 
         };
     }
